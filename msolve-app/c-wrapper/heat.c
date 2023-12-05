@@ -105,14 +105,14 @@ int main(int argc, char** argv) {
 
     int nx = 3; // x axis grid subdivisions
     int ny = 5134; // y axis grid subdivisions
-    double lx = 10.0; // domain size along x axis
-    double ly = 10.0; // domain size along y axis
-    double d = 1.0; // diffusion coefficient
+    // double lx = 10.0; // domain size along x axis
+    // double ly = 10.0; // domain size along y axis
+    // double d = 1.0; // diffusion coefficient
     int num_time_steps = 10;
-    double simulation_time = 1;
-    double dx = lx / (nx + 1); // x axis step
-    double dy = ly / (ny + 1); // y axis step
-    double epsilon = 0.0001; // conjugated gradient precision
+    // double simulation_time = 1;
+    // double dx = lx / (nx + 1); // x axis step
+    // double dy = ly / (ny + 1); // y axis step
+    // double epsilon = 0.0001; // conjugated gradient precision
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
@@ -127,11 +127,11 @@ int main(int argc, char** argv) {
 	// int num_cells = 3;
     double* u = malloc(num_cells * sizeof(double));
     double* f = malloc(num_cells * sizeof(double));
-    init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
+    // init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
     // initialize the tridiagonal matrix A:
-    double a[3] = {0};
-    double dt = simulation_time / num_time_steps;
-    filling_A(&d, &dx, &dy, &dt, &nx, &ny, a);
+    // double a[3] = {0};
+    // double dt = simulation_time / num_time_steps;
+    // filling_A(&d, &dx, &dy, &dt, &nx, &ny, a);
 
     // melissa_init is the first Melissa function to call, and it is called only
     // once by each process in comm_app. It mainly contacts the server.

@@ -75,6 +75,7 @@ WORKDIR $HOME/msolve-app
 RUN cd ./BumperCollitionSimulation/ && \
 	dotnet build
 
+
 RUN	cd ./c-wrapper/ && \
 	. $HOME/spack/share/spack/setup-env.sh && \
 	spack load melissa-api && \

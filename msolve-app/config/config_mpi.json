@@ -13,9 +13,9 @@
         // otherwise it is the number of clients (i.e. simulations) to execute
         "parameter_sweep_size": 3,
         "num_samples": 100,
-        "nb_parameters": 2,
+        "nb_parameters": 1,
         "parameter_range": [200000000, 220000000],
-        "simulation_timeout": 10,
+        "simulation_timeout": 40000,
         "crashes_before_redraw": 1000,
         "verbosity": 4
     },
