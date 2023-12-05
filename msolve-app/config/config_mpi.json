@@ -29,6 +29,7 @@
     },
     "launcher_config": {
         "scheduler": "openmpi",
+        "scheduler-arg":, "--oversubscribe"
         "scheduler_arg_client": ["-n", "1","--timeout", "60", "-x", "MELISSA_COUPLING=1"],
         "scheduler_arg_server": ["-n", "1","--timeout", "3600"],
         "fault_tolerance": false,
