@@ -1,2 +1,2 @@
 # collision-melissa
-test MSolve application in distributed computing framework Melissa
+test car bumper collision simulation with MSolve using distributed computing framework Melissa
