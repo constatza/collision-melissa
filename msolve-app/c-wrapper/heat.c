@@ -1,49 +1,15 @@
-// Copyright (c) 2017, Institut National de Recherche en Informatique et en Automatique (Inria)
-//               2017, EDF
-//               2018-2021, Institut National de Recherche en Informatique et en Automatique (Inria)
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are
-// met:
-//
-// * Redistributions of source code must retain the above copyright notice,
-//   this list of conditions and the following disclaimer.
-//
-// * Redistributions in binary form must reproduce the above copyright
-//   notice, this list of conditions and the following disclaimer in the
-//   documentation and/or other materials provided with the distribution.
-//
-// * Neither the name of the copyright holder nor the names of its
-//   contributors may be used to endorse or promote products derived from
-//   this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-// IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-// TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-// PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-// TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-// NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#include <melissa_api.h>
+#include <melissa/api.h>
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/time.h>
 #include <sys/wait.h>
-#include <time.h>
-
 #include <math.h>
 #include <mpi.h>
 
+#define MAX_LINE_LENGTH 1000
 // Fortran interfaces
 void read_file(int*, int*, double*, double*, double*);
 
@@ -65,41 +31,11 @@ void conjgrad(
 void finalize(
     double*, double*, int*, int*, int*, int*, double*, double*, int*, int*);
 
-// Time indication
-void get_current_time(int time_step, int max_time_step) {
-    char buffer[26];
-    int millisec;
-    struct tm* tm_info;
-    struct timeval tv;
-
-    gettimeofday(&tv, NULL);
-
-    millisec = lrint(tv.tv_usec/1000.0); // Round to nearest millisec
-    if (millisec>=1000) { // Allow for rounding up to nearest second
-        millisec -=1000;
-        tv.tv_sec++;
-    }
-
-    tm_info = localtime(&tv.tv_sec);
-
-    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
-
-    char output[37];
-    sprintf(output, "%s.%03d\n", buffer, millisec);
-    printf("Advancement: %d/%d, %s.%03d\n", time_step, max_time_step, buffer, millisec);
-    fflush(stdout);
-}
 
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
-    
-    printf("Simulation input number: %d\n",argc-1);
-    for (int i=0; i+1<argc; ++i){
-    	printf("Input parameters values: %s \n",argv[i + 1]);
-    }
-    printf("\n"); 
 
-    if(argc < 5 || argc > 9) {
+    if(argc < 2 || argc > 6) {
         fprintf(
             stderr, "usage: %s <initial temperature> [boundary temperatures]\n",
             argv[0]);
@@ -110,8 +46,9 @@ int main(int argc, char** argv) {
     // The four next optional parameters are the boundary temperatures
     double params[5] = {0};
 
-    for(int i = 0; i + 1 < argc - 3; ++i) {
-        params[i] = strtod(argv[i + 4], NULL);
+    for(int i = 0; i + 1 < argc; ++i) {
+        params[i] = strtod(argv[i + 1], NULL);
+
         if(!isfinite(params[i])) {
             fprintf(
                 stderr,
@@ -158,14 +95,12 @@ int main(int argc, char** argv) {
         previous = MPI_PROC_NULL;
     }
 
-    struct timeval begin, end; // timer
-    gettimeofday(&begin, 0);
-    int nx = strtol(argv[1], (char **)NULL, 10); // x axis grid subdivisions
-    int ny = strtol(argv[2], (char **)NULL, 10); // y axis grid subdivisions
+    int nx = 3; // x axis grid subdivisions
+    int ny = 5134; // y axis grid subdivisions
     double lx = 10.0; // domain size along x axis
     double ly = 10.0; // domain size along y axis
     double d = 1.0; // diffusion coefficient
-    int num_time_steps = strtol(argv[3], (char **)NULL, 10);
+    int num_time_steps = 10;
     double simulation_time = 1;
     double dx = lx / (nx + 1); // x axis step
     double dy = ly / (ny + 1); // y axis step
@@ -181,6 +116,7 @@ int main(int argc, char** argv) {
 
     // initialization
     int num_cells = in - i1 + 1;
+	// int num_cells = 3;
     double* u = malloc(num_cells * sizeof(double));
     double* f = malloc(num_cells * sizeof(double));
     init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
@@ -195,37 +131,69 @@ int main(int argc, char** argv) {
     melissa_init(field_name, num_cells, comm_app);
 
     // main loop
-    for(int n = 0; n < num_time_steps; ++n) {
-        double t = 1.0 * (n + 1) / num_time_steps * simulation_time;
-        // fill right-hand side vector F before each iteration
-        filling_F(
-            &nx, &ny, u, &d, &dx, &dy, &dt, &t, f, &i1, &in, &lx, &ly, params);
-        // solve Au = F
-        conjgrad(
-            a, f, u, &nx, &ny, &epsilon, &i1, &in, &num_procs, &me, &next,
-            &previous, &fcomm);
-        // send u to the Melissa server
-        if ((n + 1) % (num_time_steps / 100) == 0) {
-            melissa_send(field_name, u);
-        }
+     //for(int n = 0; n < num_time_steps; ++n) {
+        //printf("\n time step: %d\n", n);
+        //Call .net application
+        char app[] = "../../BumperCollitionSimulation/BumperCollitionSimulation/bin/Debug/net6.0/BumperCollitionSimulation ";
+		//char app[] = "../../carbumperExample/bin/Debug/net6.0/carbumperExample ";
+        strcat(app, argv[1]);
+        strcat(app," 2>&1");
+        
+         printf("Calling .Net App:\n%s\n", app);
+         FILE* file = popen(app, "r");
+         printf(">.Net App returned!\n");
 
-        if (me == 0 && (n+1)) {
-            get_current_time(n + 1, num_time_steps);
-        }
-    }
+        //Read app output from file
+		int timeStep = 0;
+        int dof = 0;
+        char line[MAX_LINE_LENGTH];
+         while(fgets(line, MAX_LINE_LENGTH, file)){
+             u[dof] = strtod(line, NULL);
+			 printf("MSolve solution: %d\t%s\n", timeStep, line);
+             dof++;
+             if (dof >= num_cells_global)
+             {
+                printf("Sending %d dofs to melissa...\n", dof);
+                melissa_send(field_name, u);
+                dof = 0;
+				timeStep++ ;
+				if (timeStep>num_time_steps)
+					break ;
+            }
+         }
+		 //melissa_send(field_name, u);
+		 printf("closing file\n");
+         //pclose(file); uncomment this later
+         //Get your exit code...
+		int status=pclose(file);
+		if(WIFEXITED(status)) {
+		//If you need to do something when the pipe exited, this is the time.
+			status=WEXITSTATUS(status);
+			printf("process exited with status %d", status);
+		}
+		else if(WIFSIGNALED(status)) {
+			//If you need to add something if the pipe process was terminated, do it here.
+			status=WTERMSIG(status);
+			printf("process TERMINATED with status %d", status);
+		}
+		else if(WIFSTOPPED(status)) {
+			//If you need to act upon the process stopping, do it here.
+			status=WSTOPSIG(status);
+			printf("process stopped with status %d", status);
+		}
+		else {
+			printf("something else happened...spookie action at a distance???");
+		}
+     //}
 
     // melissa_finalize closes the connection with the server.
     // No Melissa function should be called after melissa_finalize.
-    melissa_finalize();
-    
+    printf("finished the analyses\n");
+	melissa_finalize();
+	printf("Melissa finalized\n");
     free(u);
     free(f);
-    
-    gettimeofday(&end, 0);
-    long seconds = end.tv_sec - begin.tv_sec;
-    long microseconds = end.tv_usec - begin.tv_usec;
-    double elapsed = seconds + microseconds*1e-6;
-    if (me == 0){ printf("Total elapsed time: %f sec \n",elapsed); }
 
     MPI_Finalize();
+	printf("MPI finalized\n");
 }
