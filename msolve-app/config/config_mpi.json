@@ -4,7 +4,7 @@
 {
     "server_filename": "heatpde_sa_server.py",
     "server_class": "HeatPDEServerSA",
-    "output_dir": "STUDY_OUT",
+    "output_dir": "../output",
     "study_options": {
         "field_names": [
             "temperature"
@@ -14,10 +14,10 @@
         "parameter_sweep_size": 3,
         "num_samples": 100,
         "nb_parameters": 2,
-        "parameter_range": [100, 200],
+        "parameter_range": [200000000, 220000000],
         "simulation_timeout": 10,
         "crashes_before_redraw": 1000,
-        "verbosity": 2
+        "verbosity": 4
     },
     "sa_config": {
         "mean": true,
@@ -35,7 +35,7 @@
         "fault_tolerance": false,
         "job_limit": 2,
         "timer_delay": 1,
-        "verbosity": 2
+        "verbosity": 4
     },
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
