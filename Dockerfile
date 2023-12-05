@@ -69,11 +69,19 @@ RUN git clone -c feature.manyFiles=true https://github.com/spack/spack.git && \
 
 FROM melissa_builder AS app_builder
 # demo app
-COPY --chown=docker ./msolve-app /home/docker/msolve-app
-WORKDIR /home/docker/msolve-app/BumperCollitionSimulation/
-RUN dotnet build
-WORKDIR /home/docker/msolve-app/c-wrapper/build
-#RUN cmake .. && make 
+ENV HOME=/home/docker
+COPY --chown=docker ./msolve-app $HOME/msolve-app
+WORKDIR $HOME/msolve-app
+RUN cd ./BumperCollitionSimulation/ && \
+	dotnet build
+
+RUN	cd ./c-wrapper/ && \
+	. $HOME/spack/share/spack/setup-env.sh && \
+	spack load melissa-api && \
+	spack load py-melissa-core && \
+	mkdir build && cd build && \
+	cmake .. && make 
+
 ENTRYPOINT ["/home/docker/msolve-app/setup-env.sh"]
 
 # Command to keep the container running

@@ -1,4 +1,4 @@
-#include <melissa/api.h>
+#include <melissa_api.h>
 
 #include <assert.h>
 #include <stdio.h>
@@ -35,7 +35,15 @@ void finalize(
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
 
-    if(argc < 2 || argc > 6) {
+
+    // if(argc < 2 || argc > 6) {
+    //     fprintf(
+    //         stderr, "usage: %s <initial temperature> [boundary temperatures]\n",
+    //         argv[0]);
+    //     return EXIT_FAILURE;
+    // }
+    
+    if(argc < 1 || argc > 2) {
         fprintf(
             stderr, "usage: %s <initial temperature> [boundary temperatures]\n",
             argv[0]);
