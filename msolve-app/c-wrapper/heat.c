@@ -9,7 +9,7 @@
 #include <math.h>
 #include <mpi.h>
 
-#define MAX_LINE_LENGTH 1000
+#define MAX_LINE_LENGTH 20000
 // Fortran interfaces
 void read_file(int*, int*, double*, double*, double*);
 
@@ -36,19 +36,13 @@ int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
 
 
-    // if(argc < 2 || argc > 6) {
-    //     fprintf(
-    //         stderr, "usage: %s <initial temperature> [boundary temperatures]\n",
-    //         argv[0]);
-    //     return EXIT_FAILURE;
-    // }
-    
-    if(argc < 1 || argc > 2) {
+    if(argc < 2 || argc > 6) {
         fprintf(
             stderr, "usage: %s <initial temperature> [boundary temperatures]\n",
             argv[0]);
         return EXIT_FAILURE;
     }
+    
 
     // The initial temperature is stored in params[0]
     // The four next optional parameters are the boundary temperatures
@@ -103,16 +97,16 @@ int main(int argc, char** argv) {
         previous = MPI_PROC_NULL;
     }
 
-    int nx = 3; // x axis grid subdivisions
-    int ny = 5134; // y axis grid subdivisions
-    // double lx = 10.0; // domain size along x axis
-    // double ly = 10.0; // domain size along y axis
-    // double d = 1.0; // diffusion coefficient
-    int num_time_steps = 10;
-    // double simulation_time = 1;
-    // double dx = lx / (nx + 1); // x axis step
-    // double dy = ly / (ny + 1); // y axis step
-    // double epsilon = 0.0001; // conjugated gradient precision
+    int nx = strtol(argv[1], (char **)NULL, 10); // x axis grid subdivisions
+    int ny = strtol(argv[2], (char **)NULL, 10); // y axis grid subdivisions
+    double lx = 10.0; // domain size along x axis
+    double ly = 10.0; // domain size along y axis
+    double d = 1.0; // diffusion coefficient
+    int num_time_steps = strtol(argv[3], (char **)NULL, 10);
+    double simulation_time = 1;
+    double dx = lx / (nx + 1); // x axis step
+    double dy = ly / (ny + 1); // y axis step
+    double epsilon = 0.0001; // conjugated gradient precision
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
@@ -126,7 +120,7 @@ int main(int argc, char** argv) {
     int num_cells = in - i1 + 1;
 	// int num_cells = 3;
     double* u = malloc(num_cells * sizeof(double));
-    double* f = malloc(num_cells * sizeof(double));
+    // double* f = malloc(num_cells * sizeof(double));
     // init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
     // initialize the tridiagonal matrix A:
     // double a[3] = {0};
@@ -138,69 +132,78 @@ int main(int argc, char** argv) {
     const char field_name[] = "temperature";
     melissa_init(field_name, num_cells, comm_app);
 
-    // main loop
-     //for(int n = 0; n < num_time_steps; ++n) {
-        //printf("\n time step: %d\n", n);
-        //Call .net application
-        char app[] = "../../BumperCollitionSimulation/BumperCollitionSimulation/bin/Debug/net6.0/BumperCollitionSimulation ";
-		//char app[] = "../../carbumperExample/bin/Debug/net6.0/carbumperExample ";
-        strcat(app, argv[1]);
-        strcat(app," 2>&1");
-        
-         printf("Calling .Net App:\n%s\n", app);
-         FILE* file = popen(app, "r");
-         printf(">.Net App returned!\n");
+    //printf("\n time step: %d\n", n);
+    //Call .net application
+    char app[] = "../../BumperCollitionSimulation/BumperCollitionSimulation/bin/Debug/net6.0/BumperCollitionSimulation ";
+	//char app[] = "../../carbumperExample/bin/Debug/net6.0/carbumperExample ";
+    strcat(app, argv[4]);
+    strcat(app," 2>&1");
+    
+    printf("Calling .Net App:\n%s\n", app);
+    FILE* file = popen(app, "r");
+    if (file == NULL) {
+        printf("Failed to open pipe.\n");
+        return -1;
+    }
+     printf(">.Net App returned!\n");
 
-        //Read app output from file
-		int timeStep = 0;
-        int dof = 0;
-        char line[MAX_LINE_LENGTH];
-         while(fgets(line, MAX_LINE_LENGTH, file)){
-             u[dof] = strtod(line, NULL);
-			 printf("MSolve solution: %d\t%s\n", timeStep, line);
-             dof++;
-             if (dof >= num_cells_global)
-             {
-                printf("Sending %d dofs to melissa...\n", dof);
-                melissa_send(field_name, u);
-                dof = 0;
-				timeStep++ ;
-				if (timeStep>num_time_steps)
-					break ;
-            }
-         }
+    //Read app output from file
+	int timeStep = 0;
+    int dof = 0;
+    char line[MAX_LINE_LENGTH];
+    // main loop
+    for(int n = 0; n < num_time_steps; ++n) {
+        melissa_send(field_name, u);
+    }
+    // while(fgets(line, sizeof(line), file) != NULL){
+    //     printf("Reading line %d", dof + 1);
+    //     u[dof] = strtod(line, NULL);
+	// 	printf("MSolve solution: %d\t%s\n", timeStep, line);
+    //     dof++;
+    //     if (dof >= num_cells_global) 
+    //     {
+    //         printf("Sending %d dofs to melissa...\n", dof);
+    //         melissa_send(field_name, u);
+    //         dof = 0;
+	// 	    timeStep++ ;
+	// 		if (timeStep>num_time_steps)
+	// 			break ;
+    //    }
+    // }
 		 //melissa_send(field_name, u);
 		 printf("closing file\n");
-         //pclose(file); uncomment this later
+         //pclose(file); do not uncomment this later
          //Get your exit code...
-		int status=pclose(file);
-		if(WIFEXITED(status)) {
-		//If you need to do something when the pipe exited, this is the time.
-			status=WEXITSTATUS(status);
-			printf("process exited with status %d", status);
-		}
-		else if(WIFSIGNALED(status)) {
-			//If you need to add something if the pipe process was terminated, do it here.
-			status=WTERMSIG(status);
-			printf("process TERMINATED with status %d", status);
-		}
-		else if(WIFSTOPPED(status)) {
-			//If you need to act upon the process stopping, do it here.
-			status=WSTOPSIG(status);
-			printf("process stopped with status %d", status);
-		}
-		else {
-			printf("something else happened...spookie action at a distance???");
-		}
-     //}
+		//int status=pclose(file);
+		//commented
+		//if(WIFEXITED(status)) {
+		////If you need to do something when the pipe exited, this is the time.
+		//	status=WEXITSTATUS(status);
+		//	printf("process exited with status %d", status);
+		//}
+		//else if(WIFSIGNALED(status)) {
+		//	//If you need to add something if the pipe process was terminated, do it here.
+		//	status=WTERMSIG(status);
+		//	printf("process TERMINATED with status %d", status);
+		//}
+		//else if(WIFSTOPPED(status)) {
+		//	//If you need to act upon the process stopping, do it here.
+		//	status=WSTOPSIG(status);
+		//	printf("process stopped with status %d", status);
+		//}
+		//else {
+		//	printf("something else happened...spookie action at a distance???");
+		//}
+    // }
 
+    // melissa_send(field_name, u);
     // melissa_finalize closes the connection with the server.
     // No Melissa function should be called after melissa_finalize.
     printf("finished the analyses\n");
 	melissa_finalize();
 	printf("Melissa finalized\n");
     free(u);
-    free(f);
+    // free(f);
 
     MPI_Finalize();
 	printf("MPI finalized\n");

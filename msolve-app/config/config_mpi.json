@@ -12,10 +12,10 @@
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
         "parameter_sweep_size": 3,
-        "num_samples": 100,
+        "num_samples": 10,
         "nb_parameters": 1,
         "parameter_range": [200000000, 220000000],
-        "simulation_timeout": 40000,
+        "simulation_timeout": 20,
         "crashes_before_redraw": 1000,
         "verbosity": 4
     },
@@ -25,7 +25,7 @@
         "skewness": false,
         "kurtosis": false,
         "sobol_indices": false,
-        "checkpoint_interval": 50
+        "checkpoint_interval": 5
     },
     "launcher_config": {
         "scheduler": "openmpi",
@@ -39,7 +39,7 @@
     },
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
-        "executable_command": "/home/docker/msolve-app/c-wrapper/build/heatc",
+        "executable_command": "../c-wrapper/build/heatc 5134 3 10",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
             "echo bash commands",
