@@ -15,6 +15,8 @@ ENV OMPI_MCA_mpi_yield_when_idle=1
 # Make tzdata configure non-interactive
 ENV TZ=Europe/Paris
 
+ENV HOME=/home/docker
+
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ >/etc/timezone && \
 	apt-get update 
@@ -29,19 +31,18 @@ RUN adduser \
  	docker && \
 	echo "docker:docker" | chpasswd
 
-WORKDIR /home/docker
+WORKDIR $HOME
+COPY --chown=docker ./msolve-app ./msolve-app
 
-FROM base AS builder 
+
+FROM base AS installer
 RUN apt-get --yes install \
 	git \
 	ca-certificates \
 	cmake \
 	build-essential \
-	dotnet-sdk-6.0 \
 	vim 
 
-
-FROM builder AS melissa_builder 
 RUN apt-get --yes install \
 # spack & melissa dependencies
 	coreutils \
@@ -59,27 +60,23 @@ RUN apt-get --yes install \
 	python3-venv \
 	libzmq3-dev
  
+
+FROM installer as melissa-builder
 # install spack and melissa
 USER docker
 RUN git clone -c feature.manyFiles=true https://github.com/spack/spack.git && \
-. ./spack/share/spack/setup-env.sh && \
+	. ./spack/share/spack/setup-env.sh && \
 	spack install melissa-api && \
 	spack install py-melissa-core
  
 
-FROM melissa_builder AS app_builder
-# demo app
-ENV HOME=/home/docker
-COPY --chown=docker ./msolve-app $HOME/msolve-app
+FROM melissa-builder AS app
+USER docker
 WORKDIR $HOME/msolve-app
-RUN cd ./BumperCollitionSimulation/ && \
-	dotnet build
-
-
-RUN	cd ./c-wrapper/ && \
-	. $HOME/spack/share/spack/setup-env.sh && \
+RUN	. $HOME/spack/share/spack/setup-env.sh && \
 	spack load melissa-api && \
 	spack load py-melissa-core && \
+	cd $HOME/msolve-app/c-wrapper/ && \
 	mkdir build && cd build && \
 	cmake .. && make 
 

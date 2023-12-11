@@ -99,14 +99,14 @@ int main(int argc, char** argv) {
 
     int nx = strtol(argv[1], (char **)NULL, 10); // x axis grid subdivisions
     int ny = strtol(argv[2], (char **)NULL, 10); // y axis grid subdivisions
-    double lx = 10.0; // domain size along x axis
-    double ly = 10.0; // domain size along y axis
-    double d = 1.0; // diffusion coefficient
     int num_time_steps = strtol(argv[3], (char **)NULL, 10);
-    double simulation_time = 1;
-    double dx = lx / (nx + 1); // x axis step
-    double dy = ly / (ny + 1); // y axis step
-    double epsilon = 0.0001; // conjugated gradient precision
+    // double lx = 10.0; // domain size along x axis
+    // double ly = 10.0; // domain size along y axis
+    // double d = 1.0; // diffusion coefficient
+    // double simulation_time = 1;
+    // double dx = lx / (nx + 1); // x axis step
+    // double dy = ly / (ny + 1); // y axis step
+    // double epsilon = 0.0001; // conjugated gradient precision
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
@@ -120,7 +120,6 @@ int main(int argc, char** argv) {
     int num_cells = in - i1 + 1;
 	// int num_cells = 3;
     double* u = malloc(num_cells * sizeof(double));
-    // double* f = malloc(num_cells * sizeof(double));
     // init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
     // initialize the tridiagonal matrix A:
     // double a[3] = {0};
@@ -134,8 +133,7 @@ int main(int argc, char** argv) {
 
     //printf("\n time step: %d\n", n);
     //Call .net application
-    char app[] = "../../BumperCollitionSimulation/BumperCollitionSimulation/bin/Debug/net6.0/BumperCollitionSimulation ";
-	//char app[] = "../../carbumperExample/bin/Debug/net6.0/carbumperExample ";
+    char app[] = "../../app/BumperCollisionSimulation ";
     strcat(app, argv[4]);
     strcat(app," 2>&1");
     
@@ -152,26 +150,26 @@ int main(int argc, char** argv) {
     int dof = 0;
     char line[MAX_LINE_LENGTH];
     // main loop
-    for(int n = 0; n < num_time_steps; ++n) {
+    /* for(int n = 0; n < num_time_steps; ++n) {
         melissa_send(field_name, u);
+    } */
+    while(fgets(line, sizeof(line), file) != NULL){
+         printf("Reading line %d", dof + 1);
+         u[dof] = strtod(line, NULL);
+	 	printf("MSolve solution: %d\t%s\n", timeStep, line);
+         dof++;
+         if (dof >= num_cells_global) 
+         {
+             printf("Sending %d dofs to melissa...\n", dof);
+             melissa_send(field_name, u);
+             dof = 0;
+	 	    timeStep++ ;
+	 		if (timeStep>num_time_steps)
+	 			break ;
+        }
     }
-    // while(fgets(line, sizeof(line), file) != NULL){
-    //     printf("Reading line %d", dof + 1);
-    //     u[dof] = strtod(line, NULL);
-	// 	printf("MSolve solution: %d\t%s\n", timeStep, line);
-    //     dof++;
-    //     if (dof >= num_cells_global) 
-    //     {
-    //         printf("Sending %d dofs to melissa...\n", dof);
-    //         melissa_send(field_name, u);
-    //         dof = 0;
-	// 	    timeStep++ ;
-	// 		if (timeStep>num_time_steps)
-	// 			break ;
-    //    }
-    // }
 		 //melissa_send(field_name, u);
-		 printf("closing file\n");
+		 printf("Closing file.\n");
          //pclose(file); do not uncomment this later
          //Get your exit code...
 		//int status=pclose(file);
@@ -199,12 +197,11 @@ int main(int argc, char** argv) {
     // melissa_send(field_name, u);
     // melissa_finalize closes the connection with the server.
     // No Melissa function should be called after melissa_finalize.
-    printf("finished the analyses\n");
+    printf("Finished the analysis.\n");
 	melissa_finalize();
-	printf("Melissa finalized\n");
+	printf("Melissa finalized.\n");
     free(u);
-    // free(f);
 
     MPI_Finalize();
-	printf("MPI finalized\n");
+	printf("MPI finalized.\n");
 }
