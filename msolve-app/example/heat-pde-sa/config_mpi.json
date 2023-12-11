@@ -1,0 +1,48 @@
+// Please make sure that all entries preceded by a comment including
+// the "FIXME" keyword are changed before running Melissa with this
+// config file
+{
+    "server_filename": "heatpde_sa_server.py",
+    "server_class": "HeatPDEServerSA",
+    "output_dir": "STUDY_OUT",
+    "study_options": {
+        "field_names": [
+            "temperature"
+        ],
+        // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
+        // otherwise it is the number of clients (i.e. simulations) to execute
+        "parameter_sweep_size": 3,
+        "num_samples": 100,
+        "nb_parameters": 2,
+        "parameter_range": [100, 200],
+        "simulation_timeout": 10,
+        "crashes_before_redraw": 1000,
+        "verbosity": 2
+    },
+    "sa_config": {
+        "mean": true,
+        "variance": true,
+        "skewness": true,
+        "kurtosis": true,
+        "sobol_indices": true,
+        "checkpoint_interval": 50
+    },
+    "launcher_config": {
+        "scheduler": "openmpi",
+        "scheduler_arg_client": ["-n", "1","--timeout", "60", "-x", "MELISSA_COUPLING=1"],
+        "scheduler_arg_server": ["-n", "1","--timeout", "3600"],
+        "fault_tolerance": false,
+        "job_limit": 2,
+        "timer_delay": 1,
+        "verbosity": 2
+    },
+    "client_config": {
+        // FIXME: the executable command needs to be replaced with the appropriate path
+        "executable_command": "../executables/build/heatc 100 100 100",
+        // all bash commands to be executed on the job node prior to melissa study
+        "preprocessing_commands": [
+            "echo bash commands",
+            "echo go here"
+        ]
+    }
+}

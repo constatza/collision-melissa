@@ -1,0 +1,63 @@
+// Please make sure that all entries preceded by a comment including
+// the "FIXME" keyword are changed before running Melissa with this
+// config file
+{
+    "server_filename": "heatpde_sa_server.py",
+    "server_class": "HeatPDEServerSA",
+    "output_dir": "STUDY_OUT",
+    "study_options": {
+        "field_names": [
+            "temperature"
+        ],
+        // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
+        // otherwise it is the number of clients (i.e. simulations) to execute
+        "parameter_sweep_size": 10,
+        "num_samples": 100,
+        "nb_parameters": 5,
+        "parameter_range": [100, 200],
+        "simulation_timeout": 400,
+        "crashes_before_redraw": 1000
+    },
+    "sa_config": {
+        "mean": true,
+        "variance": true,
+        "skewness": true,
+        "kurtosis": true,
+        "sobol_indices": false
+    },
+    "launcher_config": {
+        // the standard oar scheduler is invoked with the following options
+        "scheduler": "oar",
+        "scheduler_arg_server": [
+            "core=1,walltime=01:00:00"
+        ],
+        "scheduler_arg_client": [
+            "core=1,walltime=00:01:00"
+        ],
+        // otherwise an hybrid scheduling strategy based on job containers
+        // and taking advantage of the best-effort queue can be requested
+        // "scheduler": "oar-hybrid",
+        // "container_max_number_of_clients": 5,
+        // "besteffort_allocation_frequency": 2,
+        // "scheduler_arg_container": [
+        //     "core=6,walltime=01:10:00"
+        // ],
+        // "scheduler_arg_server": [
+        //     "core=1,walltime=01:00:00"
+        // ],
+        // "scheduler_arg_client": [
+        //     "core=1,walltime=00:10:00"
+        // ],
+        "fault_tolerance": false,
+        "verbosity": 2
+    },
+    "client_config": {
+        // FIXME: the executable command needs to be replaced with the appropriate path
+        "executable_command": "/path/to/melissa/examples/heat-pde/executables/build/heatc 100 100 100",
+        // all bash commands to be executed on the job node prior to melissa study
+        "preprocessing_commands": [
+            "echo bash commands",
+            "echo go here"
+        ]
+    }
+}

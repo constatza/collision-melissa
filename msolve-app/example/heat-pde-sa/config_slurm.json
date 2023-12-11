@@ -1,0 +1,82 @@
+// Please make sure that all entries preceded by a comment including
+// the "FIXME" keyword are changed before running Melissa with this
+// config file
+{
+    "server_filename": "heatpde_sa_server.py",
+    "server_class": "HeatPDEServerSA",
+    "output_dir": "STUDY_OUT",
+    "study_options": {
+        "field_names": [
+            "temperature"
+        ],
+        // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
+        // otherwise it is the number of clients (i.e. simulations) to execute
+        "parameter_sweep_size": 3,
+        "num_samples": 100,
+        "nb_parameters": 2,
+        "parameter_range": [100, 200],
+        "simulation_timeout": 10,
+        "crashes_before_redraw": 1000,
+        "verbosity": 3
+    },
+    "sa_config": {
+        "mean": true,
+        "variance": true,
+        "skewness": true,
+        "kurtosis": true,
+        "sobol_indices": true
+    },
+    "launcher_config": {
+        // slurm implements the srun heterogeneous syntax in an indirect fashion
+        // "scheduler": "slurm",
+        // slurm-openmpi implements the mpirun MPMD syntax in an indirect fashion
+        "scheduler": "slurm-openmpi",
+        // client #SBATCH options are passed with scheduler_arg_client (slurm)
+        // "scheduler_arg_client": [
+        //     "--account=igf@cpu",
+        //     "--ntasks=1",
+        //     "--time=00:10:00"
+        // ],
+        // client #SBATCH options are passed with scheduler_arg_client (slurm-openmpi)
+        "scheduler_arg_client": [
+            "--account=igf@cpu",
+            "--ntasks=4",
+            "--time=00:10:00"
+        ],
+        // client srun/mpirun options are passed with scheduler_client_command_options (slurm/slurm-openmpi)
+        "scheduler_client_command_options": [
+            "-n 1",
+            "--oversubscribe",
+            // MELISSA_COUPLING must be defined here (slurm-openmpi)
+            "-x MELISSA_COUPLING=1"
+        ],
+        "scheduler_arg_server": [
+            "--account=igf@cpu",
+            "--ntasks=1",
+            "--time=01:00:00"
+        ],
+        // server srun options are passed with scheduler_client_command_options (slurm)
+        // "scheduler_server_command_options": [
+        //    "--mpi=pmi2"
+        // ],
+        "fault_tolerance": false,
+        "job_limit": 2,
+        "timer_delay": 1,
+        "verbosity": 2
+    },
+    "client_config": {
+        // FIXME: the executable command needs to be replaced with the appropriate path
+        "executable_command": "/path/to/melissa/examples/heat-pde/executables/build/heatc 100 100 100",
+        // all bash commands to be executed on the job node prior to melissa study
+        "preprocessing_commands": [
+            // MELISSA_COUPLING must be defined here (slurm)
+            // "export MELISSA_COUPLING=1"
+            "module load mpi"
+        ]
+    },
+    "server_config": {
+        "preprocessing_commands": [
+            "module load mpi"
+        ]
+    }
+}
