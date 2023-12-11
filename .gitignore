@@ -3,7 +3,6 @@
 # Ignore compiled binaries and executables
 *.exe
 *.out
-*.dll
 *.so
 *.dylib
 
