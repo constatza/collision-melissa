@@ -12,7 +12,7 @@
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
         "parameter_sweep_size": 10,
-        "num_samples": 100,
+        "num_samples": 10,
         "nb_parameters": 5,
         "parameter_range": [100, 200],
         "simulation_timeout": 400,
@@ -21,15 +21,15 @@
     "sa_config": {
         "mean": true,
         "variance": true,
-        "skewness": true,
-        "kurtosis": true,
+        "skewness": false,
+        "kurtosis": false,
         "sobol_indices": false
     },
     "launcher_config": {
         // the standard oar scheduler is invoked with the following options
         "scheduler": "oar",
         "scheduler_arg_server": [
-            "core=1,walltime=01:00:00"
+            "core=1,walltime=00:05:00"
         ],
         "scheduler_arg_client": [
             "core=1,walltime=00:01:00"
@@ -53,7 +53,7 @@
     },
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
-        "executable_command": "/path/to/melissa/examples/heat-pde/executables/build/heatc 100 100 100",
+        "executable_command": "../c-wrapper/build/heatc 5134 3 10",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
             "echo bash commands",
