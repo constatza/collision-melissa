@@ -1,7 +1,7 @@
 # Copyright 2020 Institut National de Recherche en Informatique et en Automatique (https://www.inria.fr/)
 #                Poznan Supercomputing and Networking Center (https://www.psnc.pl/)
 
-ARG release=22.04
+ARG release=20.04
 
 FROM ubuntu:$release AS base
 

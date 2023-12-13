@@ -149,27 +149,28 @@ int main(int argc, char** argv) {
 	int timeStep = 0;
     int dof = 0;
     char line[MAX_LINE_LENGTH];
+    //char *line = malloc(sizeof(char)*MAX_LINE_LENGTH)
     // main loop
-    /* for(int n = 0; n < num_time_steps; ++n) {
-        melissa_send(field_name, u);
-    } */
-    while(fgets(line, sizeof(line), file) != NULL){
-         printf("Reading line %d", dof + 1);
-         u[dof] = strtod(line, NULL);
-	 	printf("MSolve solution: %d\t%s\n", timeStep, line);
-         dof++;
-         if (dof >= num_cells_global) 
-         {
-             printf("Sending %d dofs to melissa...\n", dof);
-             melissa_send(field_name, u);
-             dof = 0;
-	 	    timeStep++ ;
-	 		if (timeStep>num_time_steps)
-	 			break ;
-        }
-    }
+    for(int n = 0; n < num_time_steps; ++n) {
+         melissa_send(field_name, u);
+     }
+   //  while(fgets(line, sizeof(line), file) != NULL){
+   //       printf("Reading line %d", dof + 1);
+   //       u[dof] = strtod(line, NULL);
+	 	// printf("MSolve solution: %d\t%s\n", timeStep, line);
+   //       dof++;
+   //       if (dof >= num_cells_global) 
+   //       {
+   //           printf("Sending %d dofs to melissa...\n", dof);
+   //           melissa_send(field_name, u);
+   //           dof = 0;
+	 	//     timeStep++ ;
+	 	// 	if (timeStep>num_time_steps)
+	 	// 		break ;
+   //      }
+   //  }
 		 //melissa_send(field_name, u);
-		 printf("Closing file.\n");
+		 // printf("Closing file.\n");
          //pclose(file); do not uncomment this later
          //Get your exit code...
 		//int status=pclose(file);
