@@ -4,20 +4,21 @@
 {
     "server_filename": "heatpde_sa_server.py",
     "server_class": "HeatPDEServerSA",
-    "output_dir": "STUDY_OUT",
+    "output_dir": "../output",
     "study_options": {
         "field_names": [
             "temperature"
         ],
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
-        "parameter_sweep_size": 10,
-        "num_samples": 10,
-        "nb_parameters": 5,
-        "parameter_range": [100, 200],
+        "parameter_sweep_size": 1,
+        "num_samples": 100,
+        "nb_parameters": 1,
+        "parameter_range": [1000000, 2000000],
         "simulation_timeout": 400,
         "crashes_before_redraw": 1000
     },
+
     "sa_config": {
         "mean": true,
         "variance": true,
@@ -27,12 +28,13 @@
     },
     "launcher_config": {
         // the standard oar scheduler is invoked with the following options
+				"http_port": 6666,
         "scheduler": "oar",
         "scheduler_arg_server": [
-            "core=1,walltime=00:05:00"
+            "core=1,walltime=00:10:00"
         ],
         "scheduler_arg_client": [
-            "core=1,walltime=00:01:00"
+            "core=2,walltime=00:06:00"
         ],
         // otherwise an hybrid scheduling strategy based on job containers
         // and taking advantage of the best-effort queue can be requested
@@ -48,16 +50,26 @@
         // "scheduler_arg_client": [
         //     "core=1,walltime=00:10:00"
         // ],
-        "fault_tolerance": false,
-        "verbosity": 2
+        "fault_tolerance": true,
+        "verbosity": 6
     },
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
-        "executable_command": "../c-wrapper/build/heatc 5134 3 10",
+        "executable_command": "../msolve-app/c-wrapper/build/heatc 5134 3 100",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
-            "echo bash commands",
-            "echo go here"
+						"export DOTNET_ROOT=$HOME/.dotnet",
+						"export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools",
+            "../msolve-app/install-dotnet.sh"
         ]
-    }
+    },
+    "server_config": {
+        // all bash commands to be executed on the job node prior to melissa study
+        "preprocessing_commands": [
+						". /home/catzarakis/spack/share/spack/setup-env.sh",
+            "spack load melissa-api",
+            "spack load py-melissa-core"
+				]
+		}
+
 }

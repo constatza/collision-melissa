@@ -1,0 +1,183 @@
+2023-12-19 14:58:18,200:melissa.launcher.__main__:INFO melissa-launcher PID=1691701
+2023-12-19 14:58:18,201:melissa.launcher.__main__:DEBUG server executable /home/catzarakis/collision-melissa/output/server.sh
+2023-12-19 14:58:18,201:melissa.launcher.parser:INFO using protocol SCTP for server/launcher communication
+2023-12-19 14:58:18,449:melissa.launcher.__main__:INFO found /usr/bin/oarsub (version 2.5.10+g5k29
+2023-12-19 14:58:18,684:melissa.launcher.__main__:INFO std outputs True
+2023-12-19 14:58:18,684:melissa.utility.networking:INFO listening for connections on 0.0.0.0:52828
+2023-12-19 14:58:18,684:melissa.launcher.__main__:INFO fault-tolerance True
+2023-12-19 14:58:18,687:melissa.launcher.__main__:INFO generated web token utCEc6z6_ts31kBDfiXItg
+2023-12-19 14:58:18,693:melissa.launcher.__main__:INFO webserver listening on port 6666
+2023-12-19 14:58:18,693:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.ServerJobSubmission'>
+2023-12-19 14:58:18,696:melissa.launcher.io:INFO submission command: oarsub --scanscript --directory=/home/catzarakis/collision-melissa/output --name melissa-server -- /home/catzarakis/collision-melissa/output/oarsub/oarsub.0.sh
+2023-12-19 14:58:18,701:melissa.launcher.io:DEBUG submitting job uid 0
+2023-12-19 14:58:19,786:melissa.launcher.io:DEBUG job submission succeeded (UID 0 ID 4399638)
+2023-12-19 14:58:39,406:melissa.launcher.io:INFO accepted connection peerfd <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)> peeraddr ('172.16.72.23', 40000)
+2023-12-19 14:58:39,406:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:58:39,406:melissa.launcher.io:DEBUG received comm size 1
+2023-12-19 14:58:39,406:melissa.launcher.state_machine:DEBUG received comm size 1
+2023-12-19 14:58:39,406:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:58:39,406:melissa.launcher.state_machine:DEBUG received group size 1
+2023-12-19 14:58:39,607:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:58:39,607:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.ClientJobSubmission'>
+2023-12-19 14:58:39,609:melissa.launcher.io:INFO submission command: oarsub --scanscript --directory=/home/catzarakis/collision-melissa/output --name melissa-client -- /home/catzarakis/collision-melissa/output/oarsub/oarsub.1.sh
+2023-12-19 14:58:39,615:melissa.launcher.io:DEBUG submitting job uid 1
+2023-12-19 14:58:40,625:melissa.launcher.io:DEBUG job submission succeeded (UID 1 ID 4399641)
+2023-12-19 14:58:40,625:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 14:58:40,625:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 14:58:40,625:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:58:40,625:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 14:58:53,720:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 14:58:53,720:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 14:58:53,725:melissa.launcher.io:DEBUG updating jobs uid 2
+2023-12-19 14:58:54,002:melissa.launcher.io:DEBUG job update succeeded (UID 2)
+2023-12-19 14:58:54,003:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 14:58:54,003:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 14:58:54,004:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:58:54,004:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 14:59:13,735:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 14:59:13,735:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 14:59:13,736:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:59:13,736:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 14:59:28,747:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 14:59:28,747:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 14:59:28,763:melissa.launcher.io:DEBUG updating jobs uid 3
+2023-12-19 14:59:29,029:melissa.launcher.io:DEBUG job update succeeded (UID 3)
+2023-12-19 14:59:29,030:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 14:59:29,030:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 14:59:29,030:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:59:29,031:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 14:59:43,760:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 14:59:43,760:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 14:59:43,760:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 14:59:43,761:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:00:03,775:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:00:03,775:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:00:03,781:melissa.launcher.io:DEBUG updating jobs uid 4
+2023-12-19 15:00:04,052:melissa.launcher.io:DEBUG job update succeeded (UID 4)
+2023-12-19 15:00:04,052:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:00:04,052:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:00:04,053:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:00:04,053:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:00:13,782:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:00:13,783:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:00:13,783:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:00:13,783:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:00:38,799:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:00:38,799:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:00:38,813:melissa.launcher.io:DEBUG updating jobs uid 5
+2023-12-19 15:00:39,095:melissa.launcher.io:DEBUG job update succeeded (UID 5)
+2023-12-19 15:00:39,096:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:00:39,096:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:00:39,097:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:00:39,097:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:00:43,803:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:00:43,803:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:00:43,804:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:00:43,804:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:01:13,827:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:01:13,827:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:01:13,833:melissa.launcher.io:DEBUG updating jobs uid 6
+2023-12-19 15:01:13,833:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:01:13,833:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:01:13,833:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:01:13,834:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:01:14,098:melissa.launcher.io:DEBUG job update succeeded (UID 6)
+2023-12-19 15:01:14,098:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:01:14,098:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:01:14,098:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:01:14,098:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:01:43,854:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:01:43,855:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:01:43,855:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:01:43,855:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:01:48,859:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:01:48,859:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:01:48,874:melissa.launcher.io:DEBUG updating jobs uid 7
+2023-12-19 15:01:49,122:melissa.launcher.io:DEBUG job update succeeded (UID 7)
+2023-12-19 15:01:49,123:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:01:49,123:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:01:49,123:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:01:49,123:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:02:13,876:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:02:13,876:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:02:13,877:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:02:13,877:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:02:23,885:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:02:23,885:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:02:23,891:melissa.launcher.io:DEBUG updating jobs uid 8
+2023-12-19 15:02:24,161:melissa.launcher.io:DEBUG job update succeeded (UID 8)
+2023-12-19 15:02:24,161:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:02:24,161:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:02:24,162:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:02:24,162:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:02:43,900:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:02:43,900:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:02:43,901:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:02:43,901:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:02:58,911:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:02:58,911:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:02:58,927:melissa.launcher.io:DEBUG updating jobs uid 9
+2023-12-19 15:02:59,226:melissa.launcher.io:DEBUG job update succeeded (UID 9)
+2023-12-19 15:02:59,227:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:02:59,227:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:02:59,227:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:02:59,227:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:03:13,923:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:03:13,923:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:03:13,923:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:03:13,924:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:03:33,935:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:03:33,935:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:03:33,940:melissa.launcher.io:DEBUG updating jobs uid 10
+2023-12-19 15:03:34,221:melissa.launcher.io:DEBUG job update succeeded (UID 10)
+2023-12-19 15:03:34,222:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:03:34,222:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:03:34,223:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:03:34,223:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:03:43,945:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:03:43,945:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:03:43,945:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:03:43,946:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:04:08,971:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:04:08,971:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:04:08,985:melissa.launcher.io:DEBUG updating jobs uid 11
+2023-12-19 15:04:09,260:melissa.launcher.io:DEBUG job update succeeded (UID 11)
+2023-12-19 15:04:09,260:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:04:09,261:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:04:09,261:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:04:09,261:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:04:13,976:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:04:13,976:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:04:13,977:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:04:13,977:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:04:43,999:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:04:43,999:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:04:44,005:melissa.launcher.io:DEBUG updating jobs uid 12
+2023-12-19 15:04:44,006:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:04:44,006:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:04:44,006:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:04:44,007:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:04:44,264:melissa.launcher.io:DEBUG job update succeeded (UID 12)
+2023-12-19 15:04:44,264:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:04:44,264:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:04:44,265:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:04:44,265:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:05:14,019:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:05:14,019:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:05:14,020:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:05:14,020:melissa.launcher.state_machine:DEBUG received server ping
+2023-12-19 15:05:19,024:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobUpdate'>
+2023-12-19 15:05:19,024:melissa.launcher.io:INFO submission command: oarstat --full --json --job=4399638 --job=4399641
+2023-12-19 15:05:19,039:melissa.launcher.io:DEBUG updating jobs uid 13
+2023-12-19 15:05:19,325:melissa.launcher.io:DEBUG job update succeeded (UID 13)
+2023-12-19 15:05:19,325:melissa.launcher.state_machine:WARNING job failure id=4399641 uid=4399641 state=ERROR
+2023-12-19 15:05:19,326:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.MessageSending'>
+2023-12-19 15:05:19,326:melissa.launcher.io:DEBUG message sending on peers [<socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=132, laddr=('172.16.79.101', 52828), raddr=('172.16.72.23', 40000)>] with msg.cid [13]
+2023-12-19 15:05:19,333:melissa.launcher.io:DEBUG execute message reception
+2023-12-19 15:05:19,334:melissa.launcher.state_machine:INFO server sent EXIT message (status 1)
+2023-12-19 15:05:19,334:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.JobCancellation'>
+2023-12-19 15:05:19,334:melissa.launcher.io:INFO submission command: oardel 4399638
+2023-12-19 15:05:19,339:melissa.launcher.io:DEBUG cancelling jobs uid=14
+2023-12-19 15:05:19,535:melissa.launcher.state_machine:INFO server closed connection
+2023-12-19 15:05:19,548:melissa.launcher.io:DEBUG job cancellation succeeded (UID 14)
+2023-12-19 15:05:19,548:melissa.launcher.io:DEBUG executing <class 'melissa.launcher.action.Exit'>

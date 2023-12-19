@@ -131,47 +131,58 @@ int main(int argc, char** argv) {
     const char field_name[] = "temperature";
     melissa_init(field_name, num_cells, comm_app);
 
-    //printf("\n time step: %d\n", n);
-    //Call .net application
-    char app[] = "../../app/BumperCollisionSimulation ";
+    // Call .net application
+		// change dir
+		char app_dir[] = "/home/catzarakis/collision-melissa/msolve-app/app/";
+		/*
+		if (chdir(app_dir) == 0) {
+				printf("Changed dir\n");
+		} else {
+				perror("chdir\n");
+		}
+		*/
+    char app[] = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation ";
     strcat(app, argv[4]);
     strcat(app," 2>&1");
-    
     printf("Calling .Net App:\n%s\n", app);
     FILE* file = popen(app, "r");
     if (file == NULL) {
         printf("Failed to open pipe.\n");
-        return -1;
+        return 1;
     }
-     printf(">.Net App returned!\n");
+    printf(">.Net App returned!\n");
 
     //Read app output from file
-	int timeStep = 0;
+		int timeStep = 0;
     int dof = 0;
     char line[MAX_LINE_LENGTH];
     //char *line = malloc(sizeof(char)*MAX_LINE_LENGTH)
     // main loop
+		/*
     for(int n = 0; n < num_time_steps; ++n) {
          melissa_send(field_name, u);
      }
-   //  while(fgets(line, sizeof(line), file) != NULL){
-   //       printf("Reading line %d", dof + 1);
-   //       u[dof] = strtod(line, NULL);
-	 	// printf("MSolve solution: %d\t%s\n", timeStep, line);
-   //       dof++;
-   //       if (dof >= num_cells_global) 
-   //       {
-   //           printf("Sending %d dofs to melissa...\n", dof);
-   //           melissa_send(field_name, u);
-   //           dof = 0;
-	 	//     timeStep++ ;
-	 	// 	if (timeStep>num_time_steps)
-	 	// 		break ;
-   //      }
-   //  }
+		 */
+		
+		 while(fgets(line, sizeof(line), file) != NULL){
+          printf("Reading line %d\n", dof + 1);
+          u[dof] = strtod(line, NULL);
+					printf("MSolve solution: %d\t%s\n", timeStep, line);
+          dof++;
+          if (dof >= num_cells_global) 
+          {
+              printf("Sending %d dofs to melissa...\n", dof);
+              melissa_send(field_name, u);
+              dof = 0;
+							timeStep++;
+							if (timeStep>num_time_steps){
+								break ;
+							}
+         }
+     }
 		 //melissa_send(field_name, u);
-		 // printf("Closing file.\n");
-         //pclose(file); do not uncomment this later
+		 printf("Closing file.\n");
+    pclose(file); //do not uncomment this later
          //Get your exit code...
 		//int status=pclose(file);
 		//commented
