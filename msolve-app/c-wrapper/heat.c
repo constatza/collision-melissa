@@ -9,7 +9,7 @@
 #include <math.h>
 #include <mpi.h>
 
-#define MAX_LINE_LENGTH 20000
+#define MAX_LINE_LENGTH 200
 // Fortran interfaces
 void read_file(int*, int*, double*, double*, double*);
 
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
 
     int nx = strtol(argv[1], (char **)NULL, 10); // x axis grid subdivisions
     int ny = strtol(argv[2], (char **)NULL, 10); // y axis grid subdivisions
-    int num_time_steps = strtol(argv[3], (char **)NULL, 10);
+    int num_time_steps = 10;
     // double lx = 10.0; // domain size along x axis
     // double ly = 10.0; // domain size along y axis
     // double d = 1.0; // diffusion coefficient
@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 		*/
     char app[] = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation ";
     strcat(app, argv[4]);
-    strcat(app," 2>&1");
+    strcat(app," 2> msolve.err");
     printf("Calling .Net App:\n%s\n", app);
     FILE* file = popen(app, "r");
     if (file == NULL) {
@@ -152,18 +152,18 @@ int main(int argc, char** argv) {
     }
     printf(">.Net App returned!\n");
 
-    //Read app output from file
-		int timeStep = 0;
-    int dof = 0;
-    char line[MAX_LINE_LENGTH];
     //char *line = malloc(sizeof(char)*MAX_LINE_LENGTH)
-    // main loop
 		/*
     for(int n = 0; n < num_time_steps; ++n) {
          melissa_send(field_name, u);
      }
 		 */
 		
+    //Read app output from file
+		int timeStep = 0;
+    int dof = 0;
+    char line[MAX_LINE_LENGTH];
+    // main loop
 		 while(fgets(line, sizeof(line), file) != NULL){
           printf("Reading line %d\n", dof + 1);
           u[dof] = strtod(line, NULL);
@@ -184,27 +184,25 @@ int main(int argc, char** argv) {
 		 printf("Closing file.\n");
     pclose(file); //do not uncomment this later
          //Get your exit code...
-		//int status=pclose(file);
-		//commented
-		//if(WIFEXITED(status)) {
-		////If you need to do something when the pipe exited, this is the time.
-		//	status=WEXITSTATUS(status);
-		//	printf("process exited with status %d", status);
-		//}
-		//else if(WIFSIGNALED(status)) {
-		//	//If you need to add something if the pipe process was terminated, do it here.
-		//	status=WTERMSIG(status);
-		//	printf("process TERMINATED with status %d", status);
-		//}
-		//else if(WIFSTOPPED(status)) {
-		//	//If you need to act upon the process stopping, do it here.
-		//	status=WSTOPSIG(status);
-		//	printf("process stopped with status %d", status);
-		//}
-		//else {
-		//	printf("something else happened...spookie action at a distance???");
-		//}
-    // }
+		int status=pclose(file);
+		if(WIFEXITED(status)) {
+		//If you need to do something when the pipe exited, this is the time.
+			status=WEXITSTATUS(status);
+			printf("process exited with status %d", status);
+		}
+		else if(WIFSIGNALED(status)) {
+			//If you need to add something if the pipe process was terminated, do it here.
+			status=WTERMSIG(status);
+			printf("process TERMINATED with status %d", status);
+		}
+		else if(WIFSTOPPED(status)) {
+			//If you need to act upon the process stopping, do it here.
+			status=WSTOPSIG(status);
+			printf("process stopped with status %d", status);
+		}
+		else {
+			printf("something else happened...spookie action at a distance???");
+		}
 
     // melissa_send(field_name, u);
     // melissa_finalize closes the connection with the server.
