@@ -168,7 +168,7 @@ int main(int argc, char** argv) {
     double simulation_time = 1;
     double dx = lx / (nx + 1); // x axis step
     double dy = ly / (ny + 1); // y axis step
-    double epsilon = 0.0001; // conjugated gradient precision
+    //double epsilon = 0.0001; // conjugated gradient precision
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
