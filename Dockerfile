@@ -21,6 +21,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ >/etc/timezone && \
 	apt-get update 
 
+
 # Do not run testcases as root as mpirun does not like this...
 ARG userid=1000
 RUN adduser \
@@ -43,6 +44,12 @@ RUN apt-get --yes install \
 	build-essential \
 	vim 
 
+<<<<<<< HEAD
+=======
+COPY --chown=docker ./msolve-app $HOME/msolve-app
+
+FROM builder AS melissa_builder 
+>>>>>>> ff26eba (working, no simulation)
 RUN apt-get --yes install \
 # spack & melissa dependencies
 	coreutils \
