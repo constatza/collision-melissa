@@ -12,11 +12,11 @@
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
         "parameter_sweep_size": 1,
-        "num_samples": 4,
+        "num_samples": 5,
         "nb_parameters": 1,
         "parameter_range": [1000000, 2000000],
-        "simulation_timeout": 400,
-        "crashes_before_redraw": 1000
+        "simulation_timeout": 10000,
+        "crashes_before_redraw": 100
     },
 
     "sa_config": {
@@ -34,7 +34,7 @@
             "core=1,walltime=00:08:00"
         ],
         "scheduler_arg_client": [
-            "core=1,walltime=00:03:00"
+            "core=1,walltime=00:05:00"
         ],
         // otherwise an hybrid scheduling strategy based on job containers
         // and taking advantage of the best-effort queue can be requested
@@ -51,16 +51,16 @@
         //     "core=1,walltime=00:10:00"
         // ],
         "fault_tolerance": false,
-        "verbosity": 6
+        "verbosity": 3
     },
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
-        "executable_command": "../msolve-app/c-wrapper/build/heatc 5134 3",
+        "executable_command": "../msolve-app/c-wrapper/build/heatc",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
 						"export DOTNET_ROOT=$HOME/.dotnet",
 						"export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools",
-						"export TERM=xterm",
+						"export TERM=linux",
 				"wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh",
 				"chmod +x ./dotnet-install.sh",
 				"./dotnet-install.sh --channel 6.0 --runtime aspnetcore"
@@ -69,7 +69,7 @@
     "server_config": {
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
-						". /home/catzarakis/spack/share/spack/setup-env.sh",
+						". $HOME/spack/share/spack/setup-env.sh",
             "spack load melissa-api",
             "spack load py-melissa-core",
 				]

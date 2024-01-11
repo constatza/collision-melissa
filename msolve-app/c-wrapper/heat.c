@@ -97,8 +97,8 @@ int main(int argc, char** argv) {
         previous = MPI_PROC_NULL;
     }
 
-    int nx = strtol(argv[1], (char **)NULL, 10); // x axis grid subdivisions
-    int ny = strtol(argv[2], (char **)NULL, 10); // y axis grid subdivisions
+    int nx = 3;
+    int ny = 5134;
     int num_time_steps = 10;
     // double lx = 10.0; // domain size along x axis
     // double ly = 10.0; // domain size along y axis
@@ -127,23 +127,28 @@ int main(int argc, char** argv) {
     // filling_A(&d, &dx, &dy, &dt, &nx, &ny, a);
 
     // melissa_init is the first Melissa function to call, and it is called only
-    // once by each process in comm_app. It mainly contacts the server.
+    //// once by each process in comm_app. It mainly contacts the server.
     const char field_name[] = "temperature";
     melissa_init(field_name, num_cells, comm_app);
 
     // Call .net application
-		// change dir
-		char app_dir[] = "/home/catzarakis/collision-melissa/msolve-app/app/";
-		/*
-		if (chdir(app_dir) == 0) {
-				printf("Changed dir\n");
-		} else {
-				perror("chdir\n");
-		}
-		*/
-    char app[] = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation ";
-    strcat(app, argv[4]);
-    strcat(app," 2> msolve.err");
+    //char appdir[] = "/home/catzarakis/collision-melissa/msolve-app/";
+
+
+		// Main App
+		// strcat(appdir, "app/");
+		//char app[] = "./BumperCollisionSimulation argv[1]";
+    //strcat(app," 2> msolve.err");
+
+		// Test C# App
+		//strcat(appdir, "testapp/");
+		//char app[] = "sh -c './BumperTest'";
+
+		// Test bash App
+		char app[] = "bash -c 'yes 10.0 | head -n 154020'";
+
+		//chdir(appdir);
+
     printf("Calling .Net App:\n%s\n", app);
     FILE* file = popen(app, "r");
     if (file == NULL) {
@@ -152,7 +157,6 @@ int main(int argc, char** argv) {
     }
     printf(">.Net App returned!\n");
 
-    //char *line = malloc(sizeof(char)*MAX_LINE_LENGTH)
 		/*
     for(int n = 0; n < num_time_steps; ++n) {
          melissa_send(field_name, u);
@@ -164,15 +168,16 @@ int main(int argc, char** argv) {
     int dof = 0;
     char line[MAX_LINE_LENGTH];
     // main loop
+		printf("Num timesteps: %d\n", num_time_steps);
 		 while(fgets(line, sizeof(line), file) != NULL){
-          printf("Reading line %d\n", dof + 1);
+          //printf("Reading line %d\n", dof + 1);
           u[dof] = strtod(line, NULL);
-					printf("MSolve solution: %d\t%s\n", timeStep, line);
+					//printf("MSolve solution: %d\t%s\n", timeStep, line);
           dof++;
           if (dof >= num_cells_global) 
           {
-              printf("Sending %d dofs to melissa...\n", dof);
               melissa_send(field_name, u);
+              printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, timeStep, num_time_steps);
               dof = 0;
 							timeStep++;
 							if (timeStep>num_time_steps){
@@ -180,28 +185,25 @@ int main(int argc, char** argv) {
 							}
          }
      }
-		 //melissa_send(field_name, u);
-		 printf("Closing file.\n");
-    pclose(file); //do not uncomment this later
-         //Get your exit code...
-		int status=pclose(file);
+				 //Get your exit code...
+		int status = pclose(file);
 		if(WIFEXITED(status)) {
 		//If you need to do something when the pipe exited, this is the time.
 			status=WEXITSTATUS(status);
-			printf("process exited with status %d", status);
+			printf("process exited with status %d\n", status);
 		}
 		else if(WIFSIGNALED(status)) {
 			//If you need to add something if the pipe process was terminated, do it here.
 			status=WTERMSIG(status);
-			printf("process TERMINATED with status %d", status);
+			printf("process TERMINATED with status %d\n", status);
 		}
 		else if(WIFSTOPPED(status)) {
 			//If you need to act upon the process stopping, do it here.
 			status=WSTOPSIG(status);
-			printf("process stopped with status %d", status);
+			printf("process stopped with status %d\n", status);
 		}
 		else {
-			printf("something else happened...spookie action at a distance???");
+			printf("process uknown error... spookie action at a distance???\n");
 		}
 
     // melissa_send(field_name, u);
