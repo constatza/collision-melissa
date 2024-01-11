@@ -142,15 +142,38 @@ int main(int argc, char** argv) {
 
 		// Test C# App
 		//strcat(appdir, "testapp/");
-		//char app[] = "sh -c './BumperTest'";
+		//char app[] = "./BumperTest";
+		char app[] = "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest";
+		//char app[MAX_LINE_LENGTH];
+		//sprintf(app, "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest%d", me);
 
 		// Test bash App
-		char app[] = "bash -c 'yes 10.0 | head -n 154020'";
+		//char app[] = "bash -c 'yes 10.0 | head -n 154020'";
 
-		//chdir(appdir);
+    /*
+		if (access(app, F_OK) == 0) {
+						    // file exists
+								printf("File exists.\n");
+				} else {
+								 printf("File doesn't exist.\n");
+								 return 1;
+		 }
+		 */
+    char line[MAX_LINE_LENGTH];
+		FILE* file2 = popen("bash -c 'pwd'", "r");
+		while(fgets(line, sizeof(line), file2) != NULL){
+          printf(line);
+		}
 
-    printf("Calling .Net App:\n%s\n", app);
+		FILE* file3 = popen("bash -c 'dotnet --info'", "r");
+		while(fgets(line, sizeof(line), file3) != NULL){
+          printf(line);
+		}
+		
+    printf("Calling .Net App:%s\nrank:%d\n", app, me);
+
     FILE* file = popen(app, "r");
+
     if (file == NULL) {
         printf("Failed to open pipe.\n");
         return 1;
@@ -166,15 +189,17 @@ int main(int argc, char** argv) {
     //Read app output from file
 		int timeStep = 0;
     int dof = 0;
-    char line[MAX_LINE_LENGTH];
     // main loop
 		printf("Num timesteps: %d\n", num_time_steps);
 		 while(fgets(line, sizeof(line), file) != NULL){
           //printf("Reading line %d\n", dof + 1);
           u[dof] = strtod(line, NULL);
 					//printf("MSolve solution: %d\t%s\n", timeStep, line);
+					if (dof < 0 || dof >= num_cells){
+									printf("me: %d, dof: %d\n", me, dof);
+					}
           dof++;
-          if (dof >= num_cells_global) 
+          if (dof >= num_cells) 
           {
               melissa_send(field_name, u);
               printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, timeStep, num_time_steps);
