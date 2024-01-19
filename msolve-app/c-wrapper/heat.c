@@ -100,13 +100,6 @@ int main(int argc, char** argv) {
     int nx = 3;
     int ny = 5134;
     int num_time_steps = 10;
-    // double lx = 10.0; // domain size along x axis
-    // double ly = 10.0; // domain size along y axis
-    // double d = 1.0; // diffusion coefficient
-    // double simulation_time = 1;
-    // double dx = lx / (nx + 1); // x axis step
-    // double dy = ly / (ny + 1); // y axis step
-    // double epsilon = 0.0001; // conjugated gradient precision
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
@@ -118,13 +111,7 @@ int main(int argc, char** argv) {
 
     // initialization
     int num_cells = in - i1 + 1;
-	// int num_cells = 3;
     double* u = malloc(num_cells * sizeof(double));
-    // init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
-    // initialize the tridiagonal matrix A:
-    // double a[3] = {0};
-    // double dt = simulation_time / num_time_steps;
-    // filling_A(&d, &dx, &dy, &dt, &nx, &ny, a);
 
     // melissa_init is the first Melissa function to call, and it is called only
     //// once by each process in comm_app. It mainly contacts the server.
@@ -132,43 +119,18 @@ int main(int argc, char** argv) {
     melissa_init(field_name, num_cells, comm_app);
 
     // Call .net application
-    //char appdir[] = "/home/catzarakis/collision-melissa/msolve-app/";
-
-
-		// Main App
-		// strcat(appdir, "app/");
-		//char app[] = "./BumperCollisionSimulation argv[1]";
-    //strcat(app," 2> msolve.err");
-
-		// Test C# App
-		//strcat(appdir, "testapp/");
-		//char app[] = "./BumperTest";
-		char app[] = "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest";
-		//char app[MAX_LINE_LENGTH];
-		//sprintf(app, "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest%d", me);
-
-		// Test bash App
-		//char app[] = "bash -c 'yes 10.0 | head -n 154020'";
-
-    /*
-		if (access(app, F_OK) == 0) {
-						    // file exists
-								printf("File exists.\n");
-				} else {
-								 printf("File doesn't exist.\n");
-								 return 1;
-		 }
-		 */
-    char line[MAX_LINE_LENGTH];
-		FILE* file2 = popen("bash -c 'pwd'", "r");
-		while(fgets(line, sizeof(line), file2) != NULL){
-          printf(line);
+	  char app[] = "/home/catzarakis/collision-melissa/msolve-app/";
+		if (strcmp(argv[1], "test") == 0){
+					// Test C# App
+					strcat(app, "testapp/BumperTest");
+				  // Test bash App
+					//char app[] = "bash -c 'yes 10.0 | head -n 154020'";
+	  } else {
+					// Main App
+					strcat(app, "app/BumpCollisionSimulation");
+					strcat(app, argv[1]);
 		}
-
-		FILE* file3 = popen("bash -c 'dotnet --info'", "r");
-		while(fgets(line, sizeof(line), file3) != NULL){
-          printf(line);
-		}
+													 
 		
     printf("Calling .Net App:%s\nrank:%d\n", app, me);
 
@@ -180,15 +142,11 @@ int main(int argc, char** argv) {
     }
     printf(">.Net App returned!\n");
 
-		/*
-    for(int n = 0; n < num_time_steps; ++n) {
-         melissa_send(field_name, u);
-     }
-		 */
 		
     //Read app output from file
 		int timeStep = 0;
     int dof = 0;
+    char line[MAX_LINE_LENGTH];
     // main loop
 		printf("Num timesteps: %d\n", num_time_steps);
 		 while(fgets(line, sizeof(line), file) != NULL){

@@ -12,9 +12,9 @@
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
         "parameter_sweep_size": 1,
-        "num_samples": 5,
+        "num_samples": 1,
         "nb_parameters": 1,
-        "parameter_range": [1000000, 2000000],
+        "parameter_range": [150e9, 200e9],
         "simulation_timeout": 10000,
         "crashes_before_redraw": 100
     },
@@ -29,23 +29,19 @@
     "launcher_config": {
         // the standard oar scheduler is invoked with the following options
 				"http_port": 6666,
-        "scheduler": "oar",
-        "scheduler_arg_server": [
-            "core=1,walltime=00:08:00"
-        ],
-        "scheduler_arg_client": [
-            "core=4,walltime=00:05:00"
-        ],
+         "scheduler": "oar",
+         "scheduler_arg_server": ["core=1,walltime=00:10:00"], 
+				 "scheduler_arg_client": ["core=1,walltime=00:10:00"],
         // otherwise an hybrid scheduling strategy based on job containers
         // and taking advantage of the best-effort queue can be requested
         // "scheduler": "oar-hybrid",
-        // "container_max_number_of_clients": 5,
-        // "besteffort_allocation_frequency": 2,
+        // "container_max_number_of_clients": 2,
+        // "besteffort_allocation_frequency": 1,
         // "scheduler_arg_container": [
-        //     "core=6,walltime=01:10:00"
+        //     "core=6,walltime=00:10:00"
         // ],
         // "scheduler_arg_server": [
-        //     "core=1,walltime=01:00:00"
+        //     "core=1,walltime=00:10:00"
         // ],
         // "scheduler_arg_client": [
         //     "core=1,walltime=00:10:00"
@@ -55,7 +51,7 @@
     },
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
-        "executable_command": "../msolve-app/c-wrapper/build/heatc",
+        "executable_command": "../msolve-app/c-wrapper/build/heatc test",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
 						//"export DOTNET_ROOT=$(which dotnet)",
