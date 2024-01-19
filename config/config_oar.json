@@ -14,7 +14,7 @@
         "parameter_sweep_size": 1,
         "num_samples": 1,
         "nb_parameters": 1,
-        "parameter_range": [150e9, 200e9],
+        "parameter_range": [150000000000, 200000000000],
         "simulation_timeout": 10000,
         "crashes_before_redraw": 100
     },
