@@ -146,44 +146,44 @@ int main(int argc, char** argv) {
     int dof = 0;
     char line[MAX_LINE_LENGTH];
     // main loop
-		printf("Num timesteps: %d\n", num_time_steps);
-		for (int timeStep = 0; timeStep < num_time_steps; ++timeStep)
-		{
-		 while(fgets(line, sizeof(line), file) != NULL){
-          u[dof] = strtod(line, NULL);
-					if (dof < 0 || dof >= num_cells){
-									printf("me: %d, dof: %d\n", me, dof);
-					}
-          dof++;
-          if (dof == num_cells) 
-          {
-              melissa_send(field_name, u);
-              printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, timeStep, num_time_steps);
-              dof = 0;
-							break;
-							}
+	printf("Num timesteps: %d\n", num_time_steps);
+	for (int timeStep = 0; timeStep < num_time_steps; ++timeStep)
+	{
+		while(fgets(line, sizeof(line), file) != NULL){
+        	u[dof] = strtod(line, NULL);
+			if (dof < 0 || dof >= num_cells){
+				printf("me: %d, dof: %d\n", me, dof);
+			}
+        	dof++;
+          	if (dof == num_cells) {
+              	melissa_send(field_name, u);
+              	printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, timeStep, num_time_steps);
+              	dof = 0;
+				break;
+			}
          }
      }
-				 //Get your exit code...
-		int status = pclose(file);
-		if(WIFEXITED(status)) {
-		//If you need to do something when the pipe exited, this is the time.
-			status=WEXITSTATUS(status);
-			printf("process exited with status %d\n", status);
-		}
-		else if(WIFSIGNALED(status)) {
-			//If you need to add something if the pipe process was terminated, do it here.
-			status=WTERMSIG(status);
-			printf("process TERMINATED with status %d\n", status);
-		}
-		else if(WIFSTOPPED(status)) {
-			//If you need to act upon the process stopping, do it here.
-			status=WSTOPSIG(status);
-			printf("process stopped with status %d\n", status);
-		}
-		else {
-			printf("process uknown error... spookie action at a distance???\n");
-		}
+	
+	//Get your exit code...
+	int status = pclose(file);
+	if(WIFEXITED(status)) {
+	//If you need to do something when the pipe exited, this is the time.
+		status=WEXITSTATUS(status);
+		printf("process exited with status %d\n", status);
+	}
+	else if(WIFSIGNALED(status)) {
+		//If you need to add something if the pipe process was terminated, do it here.
+		status=WTERMSIG(status);
+		printf("process TERMINATED with status %d\n", status);
+	}
+	else if(WIFSTOPPED(status)) {
+		//If you need to act upon the process stopping, do it here.
+		status=WSTOPSIG(status);
+		printf("process stopped with status %d\n", status);
+	}
+	else {
+		printf("process uknown error... spookie action at a distance???\n");
+	}
 
     // melissa_send(field_name, u);
     // melissa_finalize closes the connection with the server.
