@@ -111,26 +111,25 @@ int main(int argc, char** argv) {
 
     // initialization
     int num_cells = in - i1 + 1;
-    double* u = malloc(num_cells * sizeof(double));
+    double* u = (double*) calloc(sizeof(double), num_cells);
 
     // melissa_init is the first Melissa function to call, and it is called only
     //// once by each process in comm_app. It mainly contacts the server.
-    const char field_name[] = "temperature";
+    const char field_name[] = "temperature\0";
     melissa_init(field_name, num_cells, comm_app);
 
     // Call .net application
-	  char app[] = "/home/catzarakis/collision-melissa/msolve-app/";
-		if (strcmp(argv[1], "test") == 0){
-					// Test C# App
-					strcat(app, "testapp/BumperTest");
-				  // Test bash App
-					//char app[] = "bash -c 'yes 10.0 | head -n 154020'";
-	  } else {
-					// Main App
-					strcat(app, "app/BumpCollisionSimulation");
-					strcat(app, argv[1]);
-		}
-													 
+	  //const char* command  = "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest\0";
+	  //const char* command = "bash -c 'yes 10.0 | head -n 154020'";
+
+	  const char command[] = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation\0";
+		char app[MAX_LINE_LENGTH];
+		int chars_written = snprintf(app, sizeof(app), "%s %s\0", command, argv[1]);
+		if (chars_written < 0 || chars_written >= sizeof(app)) {
+		    fprintf(stderr, "Error constructing concatenated string.\n");
+		    return EXIT_FAILURE;
+    }
+		
 		
     printf("Calling .Net App:%s\nrank:%d\n", app, me);
 
@@ -144,27 +143,24 @@ int main(int argc, char** argv) {
 
 		
     //Read app output from file
-		int timeStep = 0;
     int dof = 0;
     char line[MAX_LINE_LENGTH];
     // main loop
 		printf("Num timesteps: %d\n", num_time_steps);
+		for (int timeStep = 0; timeStep < num_time_steps; ++timeStep)
+		{
 		 while(fgets(line, sizeof(line), file) != NULL){
-          //printf("Reading line %d\n", dof + 1);
           u[dof] = strtod(line, NULL);
-					//printf("MSolve solution: %d\t%s\n", timeStep, line);
 					if (dof < 0 || dof >= num_cells){
 									printf("me: %d, dof: %d\n", me, dof);
 					}
           dof++;
-          if (dof >= num_cells) 
+          if (dof == num_cells) 
           {
               melissa_send(field_name, u);
               printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, timeStep, num_time_steps);
               dof = 0;
-							timeStep++;
-							if (timeStep>num_time_steps){
-								break ;
+							break;
 							}
          }
      }
