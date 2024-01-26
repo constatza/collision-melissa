@@ -29,49 +29,32 @@
     },
     "launcher_config": {
         // the standard oar scheduler is invoked with the following options
-		"http_port": 6666,
+        "http_port": 6666,
         "scheduler": "oar",
         "scheduler_arg_server": ["core=1,walltime=08:00:00"], 
-		"scheduler_arg_client": ["memnode=100000/core=1,walltime=08:00:00"],
-        // otherwise an hybrid scheduling strategy based on job containers
-        // and taking advantage of the best-effort queue can be requested
-        // "scheduler": "oar-hybrid",
-        // "container_max_number_of_clients": 2,
-        // "besteffort_allocation_frequency": 1,
-        // "scheduler_arg_container": [
-        //     "core=6,walltime=00:10:00"
-        // ],
-        // "scheduler_arg_server": [
-        //     "core=1,walltime=00:10:00"
-        // ],
-        // "scheduler_arg_client": [
-        //     "core=1,walltime=00:10:00"
-        // ],
+        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=08:00:00", "-p memnode>100000"],
         "fault_tolerance": false,
         "verbosity": 3
     },
-	
+
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
     	"executable_command": "../msolve-app/c-wrapper/build/heatc",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
-				"export DOTNET_ROOT=$HOME/.dotnet",
-				"export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools",
-				"export TERM=linux",
-				//"wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh",
-				//"chmod +x ./dotnet-install.sh",
-				//"./dotnet-install.sh --channel 6.0 --runtime aspnetcore"
+        "export DOTNET_ROOT=$HOME/.dotnet",
+        "export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools",
+        //"export TERM=linux",
         ]
     },
-	
+
     "server_config": {
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
 			". $HOME/spack/share/spack/setup-env.sh",
             "spack load melissa-api",
-            "spack load py-melissa-core",
-		]
+            "spack load py-melissa-core
+         ]
 		}
 
 }
