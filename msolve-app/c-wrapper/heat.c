@@ -10,9 +10,6 @@
 #include <mpi.h>
 
 #define MAX_LINE_LENGTH 100
-// Fortran interfaces
-void load(int*, int*, int*, int*, int*);
-
 
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
@@ -57,7 +54,7 @@ int main(int argc, char** argv) {
 
     int nx = 3;
     int ny = 5134;
-    int num_time_steps = 10;
+    int num_timesteps = 10;
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
@@ -65,7 +62,6 @@ int main(int argc, char** argv) {
     // in: last global cell index assigned to the current process
     int in = -1;
     int num_cells_global = nx * ny;
-    //load(&rank, &num_cells_global, &num_procs, &i1, &in);
 
     i1 = 0;
     in = num_cells_global -1;
@@ -73,25 +69,24 @@ int main(int argc, char** argv) {
 
     // initialization
     int num_cells = in - i1 + 1;
-    double* u = (double*) calloc(sizeof(double), num_cells);
+    double* u = (double*) calloc(num_cells, sizeof(double));
 
     // melissa_init is the first Melissa function to call, and it is called only
     //// once by each process in comm_app. It mainly contacts the server.
-    const char* field_name = "temperature\0";
+    const char* field_name = "displacements";
     melissa_init(field_name, num_cells, comm_app);
 
     // Call .net application
-	  //const char* command = "bash -c 'yes 10.0 | head -n 154020'";
-	  //const char* command = "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest\0";
-    const char* command = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation\0";
+	// const char* command = "bash -c 'yes 10.0 | head -n 154020'";
+	const char* command = "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest\0";
+    // const char* command = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation";
 
     char app[MAX_LINE_LENGTH];
-    int chars_written = snprintf(app, sizeof(app), "%s %s\0", command, argv[1]);
+    int chars_written = snprintf(app, sizeof(app), "%s %s 2>&1", command, argv[1]);
     if (chars_written < 0 || chars_written >= sizeof(app)) {
         fprintf(stderr, "Error constructing concatenated string.\n");
         return EXIT_FAILURE;
     }
-
 
     printf("Calling .Net App: %s\nrank: %d/%d\n", app, rank+1, world_size);
 
@@ -99,10 +94,10 @@ int main(int argc, char** argv) {
 
     if (file == NULL) {
         printf("Failed to open pipe.\n");
-				perror("popen failed");
+		perror("popen failed");
         return 1;
     } else {
-        printf(".Net App returned!\n");
+        printf(".Net App ran.\n");
     }
 
 
@@ -110,7 +105,7 @@ int main(int argc, char** argv) {
     int dof = 0;
     char line[MAX_LINE_LENGTH];
     // main loop
-    for (int timeStep = 1; timeStep < num_time_steps + 1; ++timeStep) {
+    for (int time_step = 1; time_step < num_timesteps + 1; ++time_step) {
         while(fgets(line, sizeof(line), file) != NULL){
             u[dof] = strtod(line, NULL);
             if (dof < 0 || dof >= num_cells){
@@ -119,7 +114,7 @@ int main(int argc, char** argv) {
             dof++;
             if (dof == num_cells){
                 melissa_send(field_name, u);
-                printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, timeStep, num_time_steps);
+                printf("Sent %d dofs to melissa, timestep:%d/%d\n", dof, time_step, num_timesteps);
                 dof = 0;
                 break;
             }

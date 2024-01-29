@@ -6,18 +6,16 @@
     "server_class": "HeatPDEServerSA",
     "output_dir": "../output",
     "study_options": {
-        "field_names": [
-            "temperature"
-        ],
+        "field_names": [ "displacements" ],
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
-	"parameter_sweep_size": 1,
+        "parameter_sweep_size": 1,
         "num_samples": 10,
         "nb_parameters": 1,
         "parameter_range": [150000000000, 200000000000],
         "simulation_timeout": 10000,
         "crashes_before_redraw": 1000,
-				"verbosity": 3
+        "verbosity": 3
     },
 
     "sa_config": {
@@ -51,9 +49,9 @@
     "server_config": {
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
-			". $HOME/spack/share/spack/setup-env.sh",
+            ". $HOME/spack/share/spack/setup-env.sh",
             "spack load melissa-api",
-            "spack load py-melissa-core
+            "spack load py-melissa-core"
          ]
 		}
 

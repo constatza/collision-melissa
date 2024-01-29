@@ -43,26 +43,7 @@
 #include <math.h>
 #include <mpi.h>
 
-// Fortran interfaces
-void read_file(int*, int*, double*, double*, double*);
-
-void load(int*, int*, int*, int*, int*);
-
-void init(
-    double*, int*, int*, double*, double*, int*, double*, double*, double*);
-
-void filling_A(double*, double*, double*, double*, int*, int*, double*);
-
-void filling_F(
-    int*, int*, double*, double*, double*, double*, double*, double*, double*,
-    int*, int*, double*, double*, double*);
-
-void conjgrad(
-    double*, double*, double*, int*, int*, double*, int*, int*, int*, int*,
-    int*, int*, int*);
-
-void finalize(
-    double*, double*, int*, int*, int*, int*, double*, double*, int*, int*);
+#define MAX_LINE_LENGTH 100
 
 // Time indication
 void get_current_time(int time_step, int max_time_step) {
@@ -98,12 +79,6 @@ int main(int argc, char** argv) {
     }
     printf("\n"); 
 
-    if(argc < 5 || argc > 9) {
-        fprintf(
-            stderr, "usage: %s <initial temperature> [boundary temperatures]\n",
-            argv[0]);
-        return EXIT_FAILURE;
-    }
 
     // The initial temperature is stored in params[0]
     // The four next optional parameters are the boundary temperatures
@@ -146,29 +121,12 @@ int main(int argc, char** argv) {
     MPI_Comm_size(comm_app, &num_procs);
     int fcomm = MPI_Comm_c2f(comm_app);
 
-    // Neighbour ranks
-    int next = me + 1;
-    int previous = me - 1;
-
-    if(me == num_procs - 1) {
-        next = MPI_PROC_NULL;
-    }
-    if(me == 0) {
-        previous = MPI_PROC_NULL;
-    }
 
     struct timeval begin, end; // timer
     gettimeofday(&begin, 0);
-    int nx = strtol(argv[1], (char **)NULL, 10); // x axis grid subdivisions
-    int ny = strtol(argv[2], (char **)NULL, 10); // y axis grid subdivisions
-    int num_time_steps = strtol(argv[3], (char **)NULL, 10);
-    double lx = 10.0; // domain size along x axis
-    double ly = 10.0; // domain size along y axis
-    double d = 1.0; // diffusion coefficient
-    double simulation_time = 1;
-    double dx = lx / (nx + 1); // x axis step
-    double dy = ly / (ny + 1); // y axis step
-    double epsilon = 0.0001; // conjugated gradient precision
+    int nx = 3543;
+    int ny = 3;
+    int num_timesteps = 10;
 
     // partition work over MPI processes of this simulation
     // i1: first global cell indices assigned to this process
@@ -176,43 +134,44 @@ int main(int argc, char** argv) {
     // in: last global cell index assigned to the current process
     int in = -1;
     int num_cells_global = nx * ny;
-    load(&me, &num_cells_global, &num_procs, &i1, &in);
 
     // initialization
     int num_cells = in - i1 + 1;
     double* u = malloc(num_cells * sizeof(double));
-    init(u, &i1, &in, &dx, &dy, &nx, &lx, &ly, params);
 
     // melissa_init is the first Melissa function to call, and it is called only
     // once by each process in comm_app. It mainly contacts the server.
     const char field_name[] = "temperature";
     melissa_init(field_name, num_cells, comm_app);
+    
+    
+    const char* command = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation";
+
+    char app[MAX_LINE_LENGTH];
+    int chars_written = snprintf(app, sizeof(app), "%s %s", command, argv[1]);
+    if (chars_written < 0 || chars_written >= sizeof(app)) {
+        fprintf(stderr, "Error constructing concatenated string.\n");
+        return EXIT_FAILURE;
+    printf("Calling .Net App:\n%s\n", app);
+    FILE* file = popen(app, "r");
+    if (file == NULL) {
+        printf("Failed to open pipe.\n");
+        return -1;
+    }
+     printf(">.Net App returned!\n");
 
     // main loop
-    for(int n = 0; n < num_time_steps; ++n) {
-        char app[] = "../../BumperCollitionSimulation/BumperCollitionSimulation/bin/Debug/net6.0/BumperCollitionSimulation ";
-        strcat(app, argv[4]);
-        strcat(app," 2>&1");
-        
-        printf("Calling .Net App:\n%s\n", app);
-        FILE* file = popen(app, "r");
-        if (file == NULL) {
-            printf("Failed to open pipe.\n");
-            return -1;
-        }
-         printf(">.Net App returned!\n");
+    for(int timestep = 0; timestep < num_timesteps; ++timestep) {
 
         //Read app output from file
 	    int timeStep = 0;
         int dof = 0;
         char line[MAX_LINE_LENGTH];
         // send u to the Melissa server
-        if ((n + 1) % (num_time_steps / 100) == 0) {
-            melissa_send(field_name, u);
-        }
+        melissa_send(field_name, u);
 
-        if (me == 0 && (n+1)) {
-            get_current_time(n + 1, num_time_steps);
+        if (me == 0 && (timestep+1)) {
+            get_current_time(timestep + 1, num_timesteps);
         }
     }
 
