@@ -9,11 +9,12 @@
         "field_names": [ "displacements" ],
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
-        "parameter_sweep_size": 1,
-        "num_samples": 10,
+        "parameter_sweep_size": 10,
+        "num_samples": 20,
+        "checkpoint_interval": 1,
         "nb_parameters": 1,
         "parameter_range": [150000000000, 200000000000],
-        "simulation_timeout": 10000,
+        "simulation_timeout": 1000000,
         "crashes_before_redraw": 1000,
         "verbosity": 3
     },
@@ -21,23 +22,23 @@
     "sa_config": {
         "mean": true,
         "variance": true,
-        "skewness": false,
-        "kurtosis": false,
+        "skewness": true,
+        "kurtosis": true,
         "sobol_indices": false
     },
     "launcher_config": {
         // the standard oar scheduler is invoked with the following options
         "http_port": 6666,
         "scheduler": "oar",
-        "scheduler_arg_server": ["core=1,walltime=08:00:00"], 
-        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=08:00:00", "-p memnode>100000"],
+        "scheduler_arg_server": ["nodes=1,walltime=48:00:00", "-t night"], 
+        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=08:00:00", "-p cluster='grisou'", "-t night"],
         "fault_tolerance": false,
         "verbosity": 3
     },
 
     "client_config": {
         // FIXME: the executable command needs to be replaced with the appropriate path
-    	"executable_command": "../msolve-app/c-wrapper/build/heatc",
+    	"executable_command": "../bumper.sh",
         // all bash commands to be executed on the job node prior to melissa study
         "preprocessing_commands": [
         "export DOTNET_ROOT=$HOME/.dotnet",

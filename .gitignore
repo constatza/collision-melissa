@@ -5,6 +5,7 @@
 *.out
 *.so
 *.dylib
+*.dll
 
 # Ignore build directories
 bin/

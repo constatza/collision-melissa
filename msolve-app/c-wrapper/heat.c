@@ -19,56 +19,16 @@ int main(int argc, char** argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     int world_size = -1;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    printf("world size: %d\n", world_size);
 
-    MPI_Comm comm_app = MPI_COMM_WORLD;
-    //if(world_size == 1)
-    //{
-    //    MPI_Comm_dup(MPI_COMM_WORLD, &comm_app);
-    //}
-    //else
-    //{
-    //    int* p_appnum = NULL;
-    //    int statinfo = -1;
-    //    MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_APPNUM, &p_appnum, &statinfo);
-    //    assert(statinfo);
-    //    assert(p_appnum);
-    //    MPI_Comm_split(MPI_COMM_WORLD, *p_appnum, rank, &comm_app);
-    //}
-
-    //MPI_Comm_rank(comm_app, &rank);
-    //int num_procs = -1;
-    //MPI_Comm_size(comm_app, &num_procs);
-    //int fcomm = MPI_Comm_c2f(comm_app);
-
-    //// Neighbour ranks
-    //int next = rank + 1;
-    //int previous = rank - 1;
-
-    //if(rank == num_procs - 1) {
-    //    next = MPI_PROC_NULL;
-    //}
-    //if(rank == 0) {
-    //    previous = MPI_PROC_NULL;
-    //}
+    MPI_Comm comm_app = MPI_COMM_NULL;
+    MPI_Comm_dup(MPI_COMM_WORLD, &comm_app);
 
 
-    int nx = 3;
-    int ny = 5134;
-    int num_timesteps = 10;
-
-    // partition work over MPI processes of this simulation
-    // i1: first global cell indices assigned to this process
-    int i1 = -1;
-    // in: last global cell index assigned to the current process
-    int in = -1;
-    int num_cells_global = nx * ny;
-
-    i1 = 0;
-    in = num_cells_global -1;
-
+    int num_timesteps = 20;
+    int num_cells = 15402;
 
     // initialization
-    int num_cells = in - i1 + 1;
     double* u = (double*) calloc(num_cells, sizeof(double));
 
     // melissa_init is the first Melissa function to call, and it is called only
@@ -77,12 +37,10 @@ int main(int argc, char** argv) {
     melissa_init(field_name, num_cells, comm_app);
 
     // Call .net application
-	// const char* command = "bash -c 'yes 10.0 | head -n 154020'";
-	const char* command = "/home/catzarakis/collision-melissa/msolve-app/testapp/BumperTest\0";
-    // const char* command = "/home/catzarakis/collision-melissa/msolve-app/app/BumperCollisionSimulation";
+    const char* command = argv[1];
 
     char app[MAX_LINE_LENGTH];
-    int chars_written = snprintf(app, sizeof(app), "%s %s 2>&1", command, argv[1]);
+    int chars_written = snprintf(app, sizeof(app), "%s %s", command, argv[2]);
     if (chars_written < 0 || chars_written >= sizeof(app)) {
         fprintf(stderr, "Error constructing concatenated string.\n");
         return EXIT_FAILURE;
@@ -94,7 +52,7 @@ int main(int argc, char** argv) {
 
     if (file == NULL) {
         printf("Failed to open pipe.\n");
-		perror("popen failed");
+		perror("Executable not found.");
         return 1;
     } else {
         printf(".Net App ran.\n");
@@ -108,9 +66,6 @@ int main(int argc, char** argv) {
     for (int time_step = 1; time_step < num_timesteps + 1; ++time_step) {
         while(fgets(line, sizeof(line), file) != NULL){
             u[dof] = strtod(line, NULL);
-            if (dof < 0 || dof >= num_cells){
-                printf("rank: %d, dof: %d\n", rank, dof);
-            }
             dof++;
             if (dof == num_cells){
                 melissa_send(field_name, u);
