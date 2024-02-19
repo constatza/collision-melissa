@@ -5,7 +5,7 @@ TEST=$DIR/testapp/test.sh
 BUMPER=$DIR/app/BumperTest
 
 EXE=$BUMPER
-EXE=$TEST
+#EXE=$TEST
 
 $DIR/c-wrapper/build/heatc $EXE $1
 

@@ -30,8 +30,8 @@
         // the standard oar scheduler is invoked with the following options
         "http_port": 6666,
         "scheduler": "oar",
-        "scheduler_arg_server": ["nodes=1,walltime=48:00:00", "-t night"], 
-        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=08:00:00", "-p cluster='grisou'", "-t night"],
+        "scheduler_arg_server": ["cpu=1,walltime=14:00:00", "-t night"]
+        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=08:00:00", "-p cluster='gros'", "-t night"],
         "fault_tolerance": false,
         "verbosity": 3
     },

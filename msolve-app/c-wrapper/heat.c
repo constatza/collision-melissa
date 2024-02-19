@@ -9,7 +9,7 @@
 #include <math.h>
 #include <mpi.h>
 
-#define MAX_LINE_LENGTH 100
+#define MAX_LINE_LENGTH 1000
 
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);

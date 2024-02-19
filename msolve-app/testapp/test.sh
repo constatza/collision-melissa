@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the number of timesteps
-timesteps=10
+timesteps=20
 
 # Define the number of numbers to print
 numbers_to_print=15402
