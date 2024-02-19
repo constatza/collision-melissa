@@ -9,11 +9,12 @@
         "field_names": [ "displacements" ],
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
-        "parameter_sweep_size": 10,
+        "parameter_sweep_size": 5,
         "num_samples": 20,
         "checkpoint_interval": 1,
         "nb_parameters": 1,
         "parameter_range": [150000000000, 200000000000],
+        "group_size": 1,
         "simulation_timeout": 1000000,
         "crashes_before_redraw": 1000,
         "verbosity": 3
@@ -30,8 +31,9 @@
         // the standard oar scheduler is invoked with the following options
         "http_port": 6666,
         "scheduler": "oar",
-        "scheduler_arg_server": ["cpu=1/core=1,walltime=04:00:00"],
-        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=04:00:00", "-p cluster='grisou'"],
+        "scheduler_arg_server": ["core=1,walltime=00:40:00"],
+        "scheduler_arg_client": ["nodes=1/cpu=1,walltime=00:40:00"],
+        "num_client_processes": 8,
         "fault_tolerance": false,
         "verbosity": 3
     },
