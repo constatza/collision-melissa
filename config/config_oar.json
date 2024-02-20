@@ -4,12 +4,12 @@
 {
     "server_filename": "heatpde_sa_server.py",
     "server_class": "HeatPDEServerSA",
-    "output_dir": "../output",
+    "output_dir": "../bumper.out",
     "study_options": {
         "field_names": [ "displacements" ],
         // when Sobol indices are computed, parameter_sweep_size is the number of groups to execute
         // otherwise it is the number of clients (i.e. simulations) to execute
-        "parameter_sweep_size": 5,
+        "parameter_sweep_size": 30,
         "num_samples": 20,
         "checkpoint_interval": 1,
         "nb_parameters": 1,
@@ -31,9 +31,9 @@
         // the standard oar scheduler is invoked with the following options
         "http_port": 6666,
         "scheduler": "oar",
-        "scheduler_arg_server": ["core=1,walltime=00:40:00"],
-        "scheduler_arg_client": ["nodes=1/cpu=1,walltime=00:40:00"],
-        "num_client_processes": 8,
+        "scheduler_arg_server": ["core=1,walltime=11:00:00", "-p cluster='gros'", "-t night"],
+        "scheduler_arg_client": ["nodes=1/cpu=1/core=1,walltime=10:00:00", "-p cluster='gros'", "-t night"],
+        "num_client_processes": 1,
         "fault_tolerance": false,
         "verbosity": 3
     },
@@ -45,7 +45,6 @@
         "preprocessing_commands": [
         "export DOTNET_ROOT=$HOME/.dotnet",
         "export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools",
-        //"export TERM=linux",
         ]
     },
 
